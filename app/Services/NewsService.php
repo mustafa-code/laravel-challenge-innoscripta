@@ -11,7 +11,7 @@ abstract class NewsService
 {
 
     // Add apstract function to get data
-    public abstract function getData($sourceId) : array;
+    public abstract function getData($sourceId, $fromDate = null) : array;
 
     // add get instance function,
     public static function getInstance($forceSource)

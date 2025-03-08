@@ -2,9 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Article;
 use App\Models\Source;
 use App\Repositories\ArticleRepositoryInterface;
 use App\Services\NewsService;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class SyncNews extends Command
@@ -42,8 +44,22 @@ class SyncNews extends Command
                 continue;
             }
 
-            $articles = $dataSource->getData();
+            $lastArticle = Article::where('source_id', $source->id)
+                ->orderBy('published_at', 'desc')
+                ->first();
+            $fromDate = null;
+            if($lastArticle) {
+                // Add one second to the last fetched article to prevent duplicate last one.
+                $fromDate = Carbon::parse($lastArticle->published_at)->addSecond();
+            }
 
+            $articles = $dataSource->getData($source->id, $fromDate);
+            $count = count($articles);
+            $this->info("Fetch $count articles from $source->name");
+
+            if($count == 0){
+                continue;
+            }
             $isDone = $this->articleRepository->store($articles);
 
             if($isDone){

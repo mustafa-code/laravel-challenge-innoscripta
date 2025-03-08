@@ -21,6 +21,10 @@ class Article extends Model
         'image_url',
     ];
 
+    protected $casts = [
+        'published_at' => 'datetime',
+    ];
+
     public function source()
     {
         return $this->belongsTo(Source::class);
