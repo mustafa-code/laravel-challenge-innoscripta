@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AllArticleRequest;
+use App\Http\Requests\SearchArticleRequest;
 use App\Repositories\ArticleRepositoryInterface;
 use Illuminate\Http\Request;
 
@@ -12,14 +14,22 @@ class ArticleController extends Controller
         $this->articleRepository = $articleRepository;
     }
 
-    public function index(Request $request)
+    public function index(AllArticleRequest $request)
     {
-        $filters = $request->only(['category', 'source', 'author', 'date_from', 'date_to']);
-        return response()->json($this->articleRepository->getAll($filters));
+        $filters = $request->validated();
+
+        $articles = $this->articleRepository->getAll($filters);
+
+        return response()->json($articles);
     }
 
-    public function search(Request $request)
+    public function search(SearchArticleRequest $request)
     {
-        return response()->json($this->articleRepository->search($request->query('q')));
+        $filters = $request->validated();
+
+        $query = $filters['query'];
+        $articles = $this->articleRepository->search($query);
+
+        return response()->json($articles);
     }
 }

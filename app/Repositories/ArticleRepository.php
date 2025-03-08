@@ -10,7 +10,11 @@ class ArticleRepository implements ArticleRepositoryInterface
 {
     public function getAll(array $filters): Collection
     {
-        $query = Article::query();
+        $query = Article::with('source');
+
+        if (!empty($filters['title'])) {
+            $query->where('title', 'like', '%' . $filters['title'] . '%');
+        }
 
         if (!empty($filters['category'])) {
             $query->where('category', $filters['category']);
@@ -32,13 +36,14 @@ class ArticleRepository implements ArticleRepositoryInterface
 
     public function search(string $query): Collection
     {
-        return Article::where('title', 'like', '%' . $query . '%')
+        return Article::with('source')->where('title', 'like', '%' . $query . '%')
             ->orWhere('content', 'like', '%' . $query . '%')
             ->get();
     }
 
     public function store(array $articlesData): bool
     {
+        // Much faster than Model::insert function.
         return DB::table('articles')->insert($articlesData);
     }
 }
