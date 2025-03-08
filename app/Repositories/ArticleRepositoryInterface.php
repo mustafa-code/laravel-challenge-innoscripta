@@ -2,12 +2,11 @@
 
 namespace App\Repositories;
 
-use Illuminate\Database\Eloquent\Collection;
-use App\Models\Article;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface ArticleRepositoryInterface
 {
-    public function getAll(array $filters): Collection;
-    public function search(string $query): Collection;
+    public function getAll(array $filters): LengthAwarePaginator;
+    public function search(string $query): LengthAwarePaginator;
     public function store(array $articlesData): bool;
 }

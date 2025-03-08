@@ -22,11 +22,11 @@ class ArticleResource extends JsonResource
             'author' => $this->author,
             'source' => $this->source->name,
             'category' => $this->category,
-            'published_at' => $this->published_at->toIso8601String(),
+            'published_at' => $this->published_at->format('Y-m-d H:i:s'),
             'url' => $this->url,
             'image_url' => $this->image_url,
-            'created_at' => $this->created_at->toIso8601String(),
-            'updated_at' => $this->updated_at->toIso8601String(),
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];
     }
 }

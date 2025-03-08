@@ -4,11 +4,12 @@ namespace App\Repositories;
 
 use App\Models\Article;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 class ArticleRepository implements ArticleRepositoryInterface
 {
-    public function getAll(array $filters): Collection
+    public function getAll(array $filters): LengthAwarePaginator
     {
         $query = Article::with('source');
 
@@ -31,14 +32,14 @@ class ArticleRepository implements ArticleRepositoryInterface
             $query->whereBetween('published_at', [$filters['date_from'], $filters['date_to']]);
         }
 
-        return $query->get();
+        return $query->paginate();
     }
 
-    public function search(string $query): Collection
+    public function search(string $query): LengthAwarePaginator
     {
         return Article::with('source')->where('title', 'like', '%' . $query . '%')
             ->orWhere('content', 'like', '%' . $query . '%')
-            ->get();
+            ->paginate();
     }
 
     public function store(array $articlesData): bool

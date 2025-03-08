@@ -20,9 +20,7 @@ class ArticleController extends Controller
 
         $articles = $this->articleRepository->getAll($filters);
 
-        return response()->success(
-            data: ArticleResource::collection($articles),
-        );
+        return $this->successResponse($articles);
     }
 
     public function search(SearchArticleRequest $request)
@@ -32,8 +30,33 @@ class ArticleController extends Controller
         $query = $filters['query'];
         $articles = $this->articleRepository->search($query);
 
+        return $this->successResponse($articles);
+    }
+
+    private function successResponse($articles)
+    {
+        if (method_exists($articles, 'total')) {
+            return response()->success(
+                data: [
+                    "articles" => ArticleResource::collection($articles),
+                    'pagination' => [
+                        'current_page' => $articles->currentPage(),
+                        'last_page' => $articles->lastPage(),
+                        'per_page' => $articles->perPage(),
+                        'total' => $articles->total(),
+                        'next_page_url' => $articles->nextPageUrl(),
+                        'prev_page_url' => $articles->previousPageUrl(),
+                    ],
+                ],
+            );
+        }
+
+        // If it's not paginated, just return the articles
         return response()->success(
-            data: ArticleResource::collection($articles),
+            data: [
+                "articles" => ArticleResource::collection($articles)
+            ],
         );
     }
+
 }
