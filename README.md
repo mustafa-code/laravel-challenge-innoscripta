@@ -126,3 +126,129 @@ $headers = [
 ```
 
 > **Note:** If the environment is set to `local`, the signature verification will be bypassed for development convenience.
+
+### API Documentation
+
+#### 1. **Get News Articles**
+
+**Endpoint:**  
+`GET /api/news`
+
+**Description:**  
+Fetches a list of news articles with optional filters.
+
+**Request Parameters:**
+
+| Parameter     | Type     | Description                      | Example                   |
+| ------------- | -------- | -------------------------------- | ------------------------- |
+| `title`       | `string` | (Optional) Title of the article  | `"Breaking News"`         |
+| `category`    | `string` | (Optional) Category of the news  | `"Technology"`            |
+| `source`      | `string` | (Optional) News source name     | `"BBC News"`              |
+| `author`      | `string` | (Optional) Author name          | `"John Doe"`              |
+| `date_from`   | `string` | (Optional) Start date in `Y-m-d` format | `"2025-02-01"`         |
+| `date_to`     | `string` | (Optional) End date in `Y-m-d` format   | `"2025-02-25"`         |
+
+**Response:**
+
+```json
+{
+  "message": "Request completed successfully",
+  "success": true,
+  "key": "completed.successful",
+  "data": {
+    "articles": [
+      {
+        "id": 1,
+        "title": "TITLE_HERE",
+        "description": "DESCRIPTION_HERE",
+        "content": "CONTENT_HERE",
+        "author": "AUTHOR_NAME",
+        "source": "SOURCE",
+        "category": "CATEGORY_HERE",
+        "published_at": "2025-02-25 21:02:56",
+        "url": "URL_HERE",
+        "image_url": "IMAGE_URL_HERE",
+        "created_at": "2025-02-25 21:02:56",
+        "updated_at": "2025-02-25 21:02:56"
+      }
+    ],
+    "pagination": {
+      "current_page": 1,
+      "last_page": 28,
+      "per_page": 15,
+      "total": 420,
+      "next_page_url": "NEXT_URL_HERE",
+      "prev_page_url": null
+    }
+  }
+}
+```
+
+**Notes:**  
+- The response includes a list of articles matching the specified filters.
+- The pagination object contains information about the current page, last page, and the total number of articles.
+
+---
+
+#### 2. **Search Articles**
+
+**Endpoint:**  
+`GET /api/search`
+
+**Description:**  
+Searches for news articles based on a query string.
+
+**Request Parameters:**
+
+| Parameter | Type   | Description                     | Example          |
+| --------- | ------ | ------------------------------- | ---------------- |
+| `query`   | `string` | (Required) Search query         | `"technology"`   |
+
+**Response:**
+
+The response structure is identical to the `/api/news` endpoint:
+
+```json
+{
+  "message": "Request completed successfully",
+  "success": true,
+  "key": "completed.successful",
+  "data": {
+    "articles": [
+      {
+        "id": 1,
+        "title": "TITLE_HERE",
+        "description": "DESCRIPTION_HERE",
+        "content": "CONTENT_HERE",
+        "author": "AUTHOR_NAME",
+        "source": "SOURCE",
+        "category": "CATEGORY_HERE",
+        "published_at": "2025-02-25 21:02:56",
+        "url": "URL_HERE",
+        "image_url": "IMAGE_URL_HERE",
+        "created_at": "2025-02-25 21:02:56",
+        "updated_at": "2025-02-25 21:02:56"
+      }
+    ],
+    "pagination": {
+      "current_page": 1,
+      "last_page": 28,
+      "per_page": 15,
+      "total": 420,
+      "next_page_url": "NEXT_URL_HERE",
+      "prev_page_url": null
+    }
+  }
+}
+```
+
+**Notes:**  
+- The search results are returned based on the query provided.
+- Pagination is included, so you can fetch more results by using the `next_page_url`.
+
+---
+
+#### Common Notes:
+- **Date Format**: For date filters, use the format `Y-m-d` (e.g., `2025-02-01`).
+- **Response Status**: The response includes a `message`, `success` flag, and a `data` object containing the results and pagination details.
+
