@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AllArticleRequest;
 use App\Http\Requests\SearchArticleRequest;
+use App\Http\Resources\ArticleResource;
 use App\Repositories\ArticleRepositoryInterface;
 use Illuminate\Http\Request;
 
@@ -19,8 +20,9 @@ class ArticleController extends Controller
         $filters = $request->validated();
 
         $articles = $this->articleRepository->getAll($filters);
+        return ArticleResource::collection($articles);
 
-        return response()->json($articles);
+        // return response()->json($articles);
     }
 
     public function search(SearchArticleRequest $request)
@@ -29,7 +31,8 @@ class ArticleController extends Controller
 
         $query = $filters['query'];
         $articles = $this->articleRepository->search($query);
+        return ArticleResource::collection($articles);
 
-        return response()->json($articles);
+        // return response()->json($articles);
     }
 }
