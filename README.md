@@ -6,7 +6,7 @@ This script import the news data from external api.
 
 ## Installation
 
-After cloning the project and open the terminal inside the project directory, Run the following commands to start the installation process, and setup the database server, or use `sqlite`.
+After cloning the project and open the terminal inside the project directory, Run the following commands to start the installation process, and setup the database server.
 
 ### Install by Composer
 
@@ -26,14 +26,14 @@ This command generate the `.env` file, remember to set the configuration paramet
 
 There are some extra parameters added in the `.env` file:
 
-- News API Key: The parameter `NEWS_API_KEY` is the api key used for news API, you can generate it from [here](https://newsapi.org/register).
-- Guardian API Key: The parameter `GUARDIAN_API_KEY` is the api key used for the Guardian API, you can generate it from [here](https://open-platform.theguardian.com/access/).
-- NewYorkTimes API Key: The parameter `NYT_API_KEY` is the api key used for New York Times API, you can generate it from [here](https://developer.nytimes.com/get-started).
+-   News API Key: The parameter `NEWS_API_KEY` is the api key used for news API, you can generate it from [here](https://newsapi.org/register).
+-   Guardian API Key: The parameter `GUARDIAN_API_KEY` is the api key used for the Guardian API, you can generate it from [here](https://open-platform.theguardian.com/access/).
+-   NewYorkTimes API Key: The parameter `NYT_API_KEY` is the api key used for New York Times API, you can generate it from [here](https://developer.nytimes.com/get-started).
 
 ```ini
-NEWS_API_KEY=
-GUARDIAN_API_KEY=
-NYT_API_KEY=
+NEWS_API_KEY=XXX
+GUARDIAN_API_KEY=XXX
+NYT_API_KEY=XXX
 ```
 
 ### Generate APP_KEY
@@ -60,3 +60,27 @@ The system perform some tasks in the background so it's important to set the sch
 
 _Usually, the cron-job requires the paths to be full absolute path, so remember to set the fill paths for `php` and `artisan` in the above cron-job._
 
+## Run locally
+
+You can run the project locally using the following command:
+
+```shell
+php artisan serve
+```
+
+_Note:_ Use the `APP_ENV` with `local` value to bypass the `VerifySignature` middleware
+
+## Sync news
+
+Run the following command to sync the news immediately.
+
+```shell
+php artisan sync:news
+```
+
+This command will start fetching the data from the News APIs, and ofcourse it will run automaticly at `12:00 AM` since its defined in `/routes/console.php` to run this command at `12:00 AM`
+
+```php
+// Sync news from external source at 12:00 AM
+Schedule::command('sync:news')->dailyAt("00:00");
+```

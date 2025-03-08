@@ -15,7 +15,7 @@ class VerifySignature
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Use local env to pypass the signature check...
+        // Use local env to bypass the signature check...
         if (config('app.env') === 'local') {
             return $next($request);
         }
