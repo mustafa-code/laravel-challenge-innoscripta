@@ -3,11 +3,17 @@
 namespace App\Services\DataSources;
 
 use App\Services\NewsService;
+use Illuminate\Support\Facades\Http;
 
 class GuardianService extends NewsService {
 
     public function getData() {
-        // https://content.guardianapis.com/search?api-key=447bd49f-32c8-4f8c-b183-944ec81ba674
+        $apiKey = config('services.news_sources.guardian.api_key');
+
+        $url = "https://content.guardianapis.com/search";
+        $response = Http::get($url, [
+            'api-key' => $apiKey,
+        ]);
     }
 
 }
