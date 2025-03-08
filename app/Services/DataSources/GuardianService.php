@@ -16,7 +16,7 @@ class GuardianService extends NewsService
         $url = "https://content.guardianapis.com/search";
         $queryParams = [
             'api-key' => $apiKey,
-            'page-size' => 3000,
+            'page-size' => 200,
             'show-fields' => 'headline,trailText,byline,thumbnail,publication,body',
             'order-by' => 'newest',
         ];
