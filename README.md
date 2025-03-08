@@ -22,6 +22,20 @@ cp .env.example .env
 
 This command generate the `.env` file, remember to set the configuration parameter based on your enviroment. Set the `APP_TIMEZONE`, `QUEUE_CONNECTION`, `DB_CONNECTION`, ...etc
 
+#### Custom Config Parameters
+
+There are some extra parameters added in the `.env` file:
+
+- News API Key: The parameter `NEWS_API_KEY` is the api key used for news API, you can generate it from [here](https://newsapi.org/register).
+- Guardian API Key: The parameter `GUARDIAN_API_KEY` is the api key used for the Guardian API, you can generate it from [here](https://open-platform.theguardian.com/access/).
+- NewYorkTimes API Key: The parameter `NYT_API_KEY` is the api key used for New York Times API, you can generate it from [here](https://developer.nytimes.com/get-started).
+
+```ini
+NEWS_API_KEY=
+GUARDIAN_API_KEY=
+NYT_API_KEY=
+```
+
 ### Generate APP_KEY
 
 ```shell
@@ -34,54 +48,6 @@ After set the database configuration in `.env` file, run the following command.
 
 ```shell
 php artisan migrate --seed
-```
-
-### Set the Queue
-
-For local development/testing run the following command to run the queue in the background.
-
-```shell
-php artisan queue:work --queue=import,emails,default
-```
-
-## Production Job
-
-Create new file in `/etc/systemd/system/`.
-
-You can use any name for your service, in this example we use `worker-queue.service`.
-
-```shell
-sudo nano /etc/systemd/system/worker-queue.service
-```
-
-Write this content inside the file:
-
-```ini
-[Unit]
-Description=Worker Queue service
-
-[Service]
-WorkingDirectory=/home/user/public_html/system-name
-ExecStart=php artisan queue:work --timeout=120 --tries=3
-User=username
-Type=simple
-Restart=always
-RestartSec=3
-
-[Install]
-WantedBy=multi-user.target
-```
-
-_`Remember to check the paths are correct.`_
-
-Save and close the file.
-
-Run this commands
-
-```shell
-sudo systemctl daemon-reload
-sudo systemctl start worker-queue.service
-systemctl status worker-queue
 ```
 
 ## Setup schedule

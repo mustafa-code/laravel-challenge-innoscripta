@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Article;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -45,6 +46,32 @@ class ArticleRepository implements ArticleRepositoryInterface
     public function store(array $articlesData): bool
     {
         // Much faster than Model::insert function.
-        return DB::table('articles')->insert($articlesData);
+        try {
+            // Filter out the duplicated URLs...
+            $existingUrls = DB::table('articles')
+                ->whereIn('url', array_column($articlesData, 'url'))
+                ->pluck('url')
+                ->toArray();
+
+            $validArticles = array_filter($articlesData, function ($article) use ($existingUrls) {
+                return isset($article['url']) && !in_array($article['url'], $existingUrls);
+            });
+
+            if (!empty($validArticles)) {
+                return DB::table('articles')->insert($validArticles);
+            }
+            return true;
+        } catch (Exception $e) {
+            report("Exception occured while inserting articles, " . $e->getMessage());
+            // Insert the items one by one
+            foreach ($articlesData as $item) {
+                try {
+                    Article::create($item);
+                } catch (Exception $ex) {
+                    report("Failed to store the article one by one. ". $ex->getMessage());
+                }
+            }
+        }
+        return false;
     }
 }

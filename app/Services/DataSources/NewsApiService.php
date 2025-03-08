@@ -12,6 +12,10 @@ class NewsApiService extends NewsService
     public function getData($sourceId, $fromDate = null): array
     {
         $apiKey = config('services.news_sources.news_api.api_key');
+        if (!$apiKey) {
+            report("API Key not set for NewsApiService");
+            return [];
+        }
 
         $url = "https://newsapi.org/v2/everything";
         $queryParams = [

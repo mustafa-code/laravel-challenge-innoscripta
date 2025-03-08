@@ -12,6 +12,10 @@ class GuardianService extends NewsService
     public function getData($sourceId, $fromDate = null): array
     {
         $apiKey = config('services.news_sources.guardian.api_key');
+        if (!$apiKey) {
+            report("API Key not set for GuardianService");
+            return [];
+        }
 
         $url = "https://content.guardianapis.com/search";
         $queryParams = [

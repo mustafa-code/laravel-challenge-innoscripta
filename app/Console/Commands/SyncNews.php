@@ -35,6 +35,12 @@ class SyncNews extends Command
      */
     public function handle()
     {
+        $checkd = $this->checkConfig();
+        if (!$checkd) {
+            $this->info("Please check your API Keys in .env file");
+            return;
+        }
+
         $sources = Source::active()->get();
         foreach ($sources as $source) {
             $this->info("Start fetching data from $source->name");
@@ -69,5 +75,13 @@ class SyncNews extends Command
                 ]);
             }
         }
+    }
+
+    private function checkConfig() : bool {
+        $nytApiKey = config('services.news_sources.new_york_times.api_key');
+        $guardianApiKey = config('services.news_sources.guardian.api_key');
+        $newsApiKey = config('services.news_sources.news_api.api_key');
+
+        return $nytApiKey || $guardianApiKey || $newsApiKey;
     }
 }
