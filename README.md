@@ -94,19 +94,3 @@ The system perform some tasks in the background so it's important to set the sch
 
 _Usually, the cron-job requires the paths to be full absolute path, so remember to set the fill paths for `php` and `artisan` in the above cron-job._
 
-You can call `/api/cron-job` API to know the absolute path inyour enviroment, the response will be like:
-
-```json
-{
-  "message": "Request completed successfully",
-  "success": true,
-  "key": "completed.successful",
-  "data": {
-    "php_path": "/usr/bin/php",
-    "cpanel_command": "/usr/bin/php /home/mustafa/Downloads/codes/laravel-challange-innoscripta/artisan schedule:run >> /dev/null 2>&1",
-    "command": "/home/mustafa/Downloads/codes/laravel-challange-innoscripta/artisan schedule:run >> /dev/null 2>&1"
-  }
-}
-```
-
-Then the `data.cpanel_command` value in the cronjob to make the schedule runs perfect.
