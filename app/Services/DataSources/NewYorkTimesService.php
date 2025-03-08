@@ -5,7 +5,7 @@ namespace App\Services\DataSources;
 use App\Services\NewsService;
 use Illuminate\Support\Facades\Http;
 
-class NewYorkTimes extends NewsService {
+class NewYorkTimesService extends NewsService {
     public function getData()
     {
         $apiKey = config('services.news_sources.new_york_times.api_key');
