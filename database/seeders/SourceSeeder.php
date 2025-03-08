@@ -13,25 +13,23 @@ class SourceSeeder extends Seeder
      */
     public function run(): void
     {
-        $sources = [
-            [
-                'name' => 'Guardian',
-                'activated_at' => now(),
-                'last_fetched_at' => null,
-            ],
-            [
-                'name' => 'NewsApi',
-                'activated_at' => now(),
-                'last_fetched_at' => null,
-            ],
-            [
-                'name' => 'NewYorkTimes',
-                'activated_at' => now(),
-                'last_fetched_at' => null,
-            ],
-
-        ];
-
-        Source::insert($sources);
+        Source::updateOrCreate([
+            'name' => 'Guardian',
+        ], [
+            'activated_at' => now(),
+            'last_fetched_at' => null,
+        ]);
+        Source::updateOrCreate([
+            'name' => 'NewsApi',
+        ], [
+            'activated_at' => now(),
+            'last_fetched_at' => null,
+        ]);
+        Source::updateOrCreate([
+            'name' => 'NewYorkTimes',
+        ], [
+            'activated_at' => now(),
+            'last_fetched_at' => null,
+        ]);
     }
 }

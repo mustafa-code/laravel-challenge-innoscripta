@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Article;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 class ArticleRepository implements ArticleRepositoryInterface
 {
@@ -36,8 +37,8 @@ class ArticleRepository implements ArticleRepositoryInterface
             ->get();
     }
 
-    public function store(array $articleData): Article
+    public function store(array $articlesData): bool
     {
-        return Article::create($articleData);
+        return DB::table('articles')->insert($articlesData);
     }
 }

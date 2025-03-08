@@ -9,5 +9,5 @@ interface ArticleRepositoryInterface
 {
     public function getAll(array $filters): Collection;
     public function search(string $query): Collection;
-    public function store(array $articleData): Article;
+    public function store(array $articlesData): bool;
 }

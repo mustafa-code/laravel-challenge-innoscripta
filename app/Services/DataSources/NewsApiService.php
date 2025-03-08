@@ -5,9 +5,11 @@ namespace App\Services\DataSources;
 use App\Services\NewsService;
 use Illuminate\Support\Facades\Http;
 
-class NewsApiService extends NewsService {
+class NewsApiService extends NewsService
+{
 
-    public function getData() {
+    public function getData($sourceId): array
+    {
         $apiKey = config('services.news_sources.news_api.api_key');
 
         $url = "https://newsapi.org/v2/everything";
@@ -15,7 +17,7 @@ class NewsApiService extends NewsService {
             'apiKey' => $apiKey,
             'q' => 'trending',
         ]);
+
+        return [];
     }
-
 }
-
