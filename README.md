@@ -2,33 +2,35 @@
 
 ## Overview
 
-This script import the news data from external api.
+This script imports news data from external APIs and processes it for your application.
 
 ## Installation
 
-After cloning the project and open the terminal inside the project directory, Run the following commands to start the installation process, and setup the database server.
+After cloning the project and opening the terminal in the project directory, run the following commands to start the installation process and set up the database server.
 
-### Install by Composer
+### Install Dependencies with Composer
 
 ```shell
 composer install
 ```
 
-### Prepare Enviroment
+### Prepare Environment Configuration
 
 ```shell
 cp .env.example .env
 ```
 
-This command generate the `.env` file, remember to set the configuration parameter based on your enviroment. Set the `APP_TIMEZONE`, `QUEUE_CONNECTION`, `DB_CONNECTION`, ...etc
+This command generates the `.env` file. Make sure to set the configuration parameters based on your environment. Specifically, configure `APP_TIMEZONE`, `QUEUE_CONNECTION`, `DB_CONNECTION`, etc.
 
 #### Custom Config Parameters
 
-There are some extra parameters added in the `.env` file:
+The `.env` file includes additional custom configuration parameters:
 
--   News API Key: The parameter `NEWS_API_KEY` is the api key used for news API, you can generate it from [here](https://newsapi.org/register).
--   Guardian API Key: The parameter `GUARDIAN_API_KEY` is the api key used for the Guardian API, you can generate it from [here](https://open-platform.theguardian.com/access/).
--   NewYorkTimes API Key: The parameter `NYT_API_KEY` is the api key used for New York Times API, you can generate it from [here](https://developer.nytimes.com/get-started).
+- **News API Key**: Set `NEWS_API_KEY` to the API key used for the News API, which you can generate from [here](https://newsapi.org/register).
+- **Guardian API Key**: Set `GUARDIAN_API_KEY` to the API key used for the Guardian API, which you can generate from [here](https://open-platform.theguardian.com/access/).
+- **New York Times API Key**: Set `NYT_API_KEY` to the API key used for the New York Times API, which you can generate from [here](https://developer.nytimes.com/get-started).
+
+Example:
 
 ```ini
 NEWS_API_KEY=XXX
@@ -44,43 +46,83 @@ php artisan key:generate
 
 ### Database Migration
 
-After set the database configuration in `.env` file, run the following command.
+Once you've set the database configuration in the `.env` file, run the following command to migrate the database and seed it with default data:
 
 ```shell
 php artisan migrate --seed
 ```
 
-## Setup schedule
+## Set Up the Schedule
 
-The system perform some tasks in the background so it's important to set the schedule cron-job runs every minutes.
+The system runs background tasks, so it’s important to set up a cron job to run every minute:
 
 ```shell
 * * * * * php artisan schedule:run >> /dev/null 2>&1
 ```
 
-_Usually, the cron-job requires the paths to be full absolute path, so remember to set the fill paths for `php` and `artisan` in the above cron-job._
+> **Note:** Ensure you use the full, absolute paths for `php` and `artisan` in the cron job, as they are often required in cron configurations.
 
-## Run locally
+## Running Locally
 
-You can run the project locally using the following command:
+To run the project locally, use the following command:
 
 ```shell
 php artisan serve
 ```
 
-_Note:_ Use the `APP_ENV` with `local` value to bypass the `VerifySignature` middleware
+> **Note:** Set `APP_ENV=local` in your `.env` file to bypass the `VerifySignature` middleware during local development.
 
-## Sync news
+## Sync News
 
-Run the following command to sync the news immediately.
+To sync the news immediately, run the following command:
 
 ```shell
 php artisan sync:news
 ```
 
-This command will start fetching the data from the News APIs, and ofcourse it will run automaticly at `12:00 AM` since its defined in `/routes/console.php` to run this command at `12:00 AM`
+This will fetch the data from the News APIs. The command is also set to run automatically every day at `12:00 AM` as defined in `/routes/console.php`:
 
 ```php
-// Sync news from external source at 12:00 AM
+// Sync news from external sources at 12:00 AM
 Schedule::command('sync:news')->dailyAt("00:00");
 ```
+
+## API Consumption
+
+To consume the news APIs, you need to include a `signature` and `timestamp` in your request headers for verification.
+
+### Generating the Signature
+
+Add the `X-Timestamp` and `X-Signature` headers to your request. Below are examples to help you generate the signature and timestamp:
+
+#### JavaScript Example:
+
+```javascript
+import CryptoJS from "crypto-js";
+
+const timestamp = Math.floor(Date.now() / 1000);
+const secretKey = "0195765c-e721-76a4-9aea-f4659f90aedf";
+
+const signature = CryptoJS.SHA256(secretKey + timestamp).toString(CryptoJS.enc.Hex);
+
+let headers = {
+    "X-Timestamp": timestamp,
+    "X-Signature": signature,
+};
+```
+
+#### PHP Example:
+
+```php
+$timestamp = time();
+$secretKey = "0195765c-e721-76a4-9aea-f4659f90aedf";
+
+$signature = hash('sha256', $secretKey . $timestamp);
+
+$headers = [
+    'X-Timestamp' => $timestamp,
+    'X-Signature' => $signature,
+];
+```
+
+> **Note:** If the environment is set to `local`, the signature verification will be bypassed for development convenience.
